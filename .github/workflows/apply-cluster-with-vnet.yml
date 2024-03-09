@@ -18,7 +18,7 @@ jobs:
 
   terraform:
     name: apply_cluster
-    runs-on: sam-automation
+    runs-on: ["self-hosted", "Linux", "X64"]
 
     environment: ${{ inputs.environment }}
 
