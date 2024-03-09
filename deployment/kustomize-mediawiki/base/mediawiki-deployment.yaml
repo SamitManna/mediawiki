@@ -34,7 +34,7 @@ spec:
               key: root-password
         volumeMounts:
         - name: config
-          mountPath: /var/www/html/mediawiki/LocalSettings.php
+          mountPath: /var/www/html/LocalSettings.php
           subPath: LocalSettings.php
       volumes:
       - name: config
