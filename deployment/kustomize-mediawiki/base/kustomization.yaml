@@ -1,6 +1,6 @@
 resources:
 - config-map.yaml
-- secret.yaml
+- secrets.yaml
 - mariadb-deployment.yaml
 - mariadb-service.yaml
 - mediawiki-deployment.yaml
