@@ -18,7 +18,7 @@ jobs:
 
   terraform:
     name: apply_cluster
-    runs-on: ubuntu-latest
+    runs-on: sam-automation
 
     environment: ${{ inputs.environment }}
 
