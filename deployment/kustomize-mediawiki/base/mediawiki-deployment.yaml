@@ -17,4 +17,57 @@ spec:
       - name: mediawiki
         image: mediawiki:1.41.0
         ports:
-        - containerPort: 8080
+        - containerPort: 80
+        env:
+        - name: MEDIAWIKI_DB_HOST
+          value: mariadb
+        - name: MEDIAWIKI_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: mariadb-env
+              key: MYSQL_DATABASE
+        - name: MEDIAWIKI_DB_USER
+          value: root
+        - name: MEDIAWIKI_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secrets
+              key: root-password
+        volumeMounts:
+        - name: config
+          mountPath: /var/www/html/mediawiki/LocalSettings.php
+          subPath: LocalSettings.php
+      volumes:
+      - name: config
+        emptyDir: {}
+        initContainers:
+        - name: localsettings
+          image: mediawiki-centos
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "<?php
+              \$wgDBserver = \"${MEDIAWIKI_DB_HOST}\";
+              \$wgDBname = \"${MEDIAWIKI_DB_NAME}\";
+              \$wgDBuser = \"${MEDIAWIKI_DB_USER}\";
+              \$wgDBpassword = \"${MEDIAWIKI_DB_PASSWORD}\";
+              ?>" > /config/LocalSettings.php
+          volumeMounts:
+          - name: config
+            mountPath: /config
+          env:
+          - name: MEDIAWIKI_DB_HOST
+            value: mariadb
+          - name: MEDIAWIKI_DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: mariadb-env
+                key: MYSQL_DATABASE
+          - name: MEDIAWIKI_DB_USER
+            value: root
+          - name: MEDIAWIKI_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mariadb-secrets
+                key: root-password

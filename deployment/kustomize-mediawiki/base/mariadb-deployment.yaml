@@ -18,7 +18,15 @@ spec:
         image: mariadb:latest
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: your_root_password
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secrets
+              key: root-password
+        - name: MYSQL_DATABASE
+          value: mediawiki
+        envFrom:
+        - configMapRef:
+            name: mariadb-env
         ports:
         - containerPort: 3306
         volumeMounts:
