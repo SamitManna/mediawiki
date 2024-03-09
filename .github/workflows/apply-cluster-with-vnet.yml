@@ -44,6 +44,5 @@ jobs:
     - name: Terraform Apply
       run: |
         terraform apply \
-        -backend-config="key=environments/${{ inputs.environment }}/terraform.tfstate" \
         -auto-approve
       working-directory: cluster-with-vnet
