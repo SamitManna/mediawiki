@@ -29,3 +29,15 @@ module "aks" {
   service_principal_id     = module.service_principal.service_principal_id
   service_principal_secret = module.service_principal.service_principal_secret
 }
+
+# data "azurerm_subscription" "current" {}
+
+# resource "azuread_group" "aks_admin_group" {
+#   name = "${var.resource_prefix}aks-cluster-admins"
+# }
+
+# resource "azurerm_role_assignment" "aks_admin_role" {
+#   scope              = module.aks.aks_id
+#   role_definition_id = "/subscriptions/${data.azurerm_subscription.current.subscription_id}/providers/Microsoft.Authorization/roleDefinitions/0ab0b1a8-8aac-4efd-b8c2-3ee07411fc5a"
+#   principal_id       = azuread_group.aks_admin_group.object_id
+# }
