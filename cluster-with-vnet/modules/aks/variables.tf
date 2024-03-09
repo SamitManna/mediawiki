@@ -1,13 +1,33 @@
-variable "resource_group_name" {
-  description = "Name of the resource group"
+variable "aks_kubernetes_version" {
+  description = "Kubernetes version"
+  default = "1.20.7"
+}
+
+variable "aks_node_count" {
+  description = "Node count in node pool"
+  default = 2
+}
+
+variable "aks_node_vm_size" {
+  description = "Node pool vm size"
+  default = "Standard_D2_v2"
+}
+
+variable "aks_subnet_id" {
+  description = "ID of the subnet for the AKS cluster"
 }
 
 variable "location" {
   description = "Azure region to create resources"
 }
 
-variable "aks_subnet_id" {
-  description = "ID of the subnet for the AKS cluster"
+variable "resource_group_name" {
+  description = "Name of the resource group"
+}
+
+variable "resource_prefix" {
+  description = "Prefix uniquely identifies Azure resources"
+  type        = string
 }
 
 variable "service_principal_id" {

@@ -1,14 +1,20 @@
+locals {
+  cluster_name = "${var.resource_prefix}-cluster"
+  dns_prefix = "${var.resource_prefix}-aks-cluster-dns"
+  node_pool_name = "${var.resource_prefix}-aks-node-pool"
+}
+
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = "my-aks-cluster"
+  name                = local.cluster_name
   location            = var.location
   resource_group_name = var.resource_group_name
-  dns_prefix          = "myakscluster"
-  kubernetes_version  = "1.20.7"
+  dns_prefix          = local.dns_prefix
+  kubernetes_version  = var.aks_kubernetes_version
 
   default_node_pool {
-    name           = "default"
-    node_count     = 2
-    vm_size        = "Standard_D2_v2"
+    name           = local.node_pool_name
+    node_count     = var.aks_node_count
+    vm_size        = var.aks_node_vm_size
     vnet_subnet_id = var.aks_subnet_id
   }
 

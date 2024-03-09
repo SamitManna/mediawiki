@@ -1,5 +1,9 @@
+locals {
+  azuread_app_name = "${var.resource_prefix}-ad-app"
+}
+
 resource "azuread_application" "aks_app" {
-  name = "my-aks-app"
+  name = local.azuread_app_name
 }
 
 resource "azuread_service_principal" "aks_sp" {
@@ -8,5 +12,5 @@ resource "azuread_service_principal" "aks_sp" {
 
 resource "azuread_service_principal_password" "aks_sp_password" {
   service_principal_id = azuread_service_principal.aks_sp.id
-  end_date_relative    = "8760h" # 1 year validity
+  end_date_relative    = var.service_principal_password_validity
 }
