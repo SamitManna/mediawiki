@@ -1,7 +1,7 @@
 locals {
   cluster_name = "${var.resource_prefix}-cluster"
   dns_prefix = "${var.resource_prefix}-aks-cluster-dns"
-  node_pool_name = "${var.resource_prefix}-aks-node-pool"
+  node_pool_name = "${var.resource_prefix}"
 }
 
 resource "azurerm_kubernetes_cluster" "aks" {
@@ -25,5 +25,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   network_profile {
     network_plugin = "azure"
+    network_policy = "azure"
+    service_cidr = "10.0.4.0/24"
+    dns_service_ip = "10.0.4.10"
+    docker_bridge_cidr = "172.17.0.1/16"
   }
 }

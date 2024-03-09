@@ -1,6 +1,6 @@
 variable "aks_kubernetes_version" {
   description = "Kubernetes version"
-  default = "1.20.7"
+  default = "1.28.3"
 }
 
 variable "aks_node_count" {
