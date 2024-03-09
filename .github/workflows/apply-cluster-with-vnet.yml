@@ -35,11 +35,15 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Terraform Init
-      run: terraform init
+      run: |
+        terraform init \
+        # -backend-config="bucket=${BUCKET}" \
+        -backend-config="key=environments/${{ inputs.environment }}/terraform.tfstate"
       working-directory: cluster-with-vnet
 
     - name: Terraform Apply
       run: |
         terraform apply \
+        -backend-config="key=environments/${{ inputs.environment }}/terraform.tfstate" \
         -auto-approve
       working-directory: cluster-with-vnet
