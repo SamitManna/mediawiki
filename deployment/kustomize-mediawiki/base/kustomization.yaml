@@ -1,0 +1,5 @@
+resources:
+- mariadb-deployment.yaml
+- mariadb-service.yaml
+- mediawiki-deployment.yaml
+- mediawiki-service.yaml
