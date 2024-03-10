@@ -24,34 +24,16 @@ spec:
           subPath: LocalSettings.php
       volumes:
       - name: config
-        emptyDir: {}
-      initContainers:
-      - name: initialize-mediawiki
-        image: mediawiki:1.41.0
-        command:
-        - /bin/sh
-        - -c
-        - |
-          php /var/www/html/maintenance/install.php \
-            --dbname=mediawiki \
-            --dbserver="mariadb" \
-            --installdbuser=root \
-            --installdbpass="$(MYSQL_ROOT_PASSWORD)" \
-            --dbuser=mediwiki_user \
-            --dbpass=I9WeyZ5aQnEqx3kL5GMQHK \
-            --server="http://localhost" \
-            --scriptpath=/w \
-            --lang=en \
-            --pass=Adminpassword \
-            "Samit" \
-            "Admin"
-          cp /var/www/html/LocalSettings.php /config/LocalSettings.php
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secrets
-              key: root-password
+        persistentVolumeClaim:
+          claimName: mediawiki-config
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mediawiki-config
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
