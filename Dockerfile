@@ -25,7 +25,7 @@ RUN dnf install -y wget \
                    openssl
 
 # Copy the MediaWiki files to the Apache document root
-RUN cd /var/www; \
+RUN cd /var/www/html; \
     curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz; \
     curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz.sig" -o mediawiki.tar.gz.sig; \
     gpg --batch --keyserver keyserver.ubuntu.com --recv-keys \
@@ -44,10 +44,10 @@ RUN cd /var/www; \
  #   && sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf \
  #   && echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf
  #
-RUN sed -i 's|DocumentRoot\s"/var/www/html"|DocumentRoot "/var/www/mediawiki"|' /etc/httpd/conf/httpd.conf \
-    && sed -i 's|<Directory\s"/var/www/html">|<Directory "/var/www/mediawiki">|' /etc/httpd/conf/httpd.conf \
-    && sed -i 's|#\sDirectoryIndex.*|DirectoryIndex index.html index.html.var index.php|' /etc/httpd/conf/httpd.conf \
-    && echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf
+# RUN sed -i 's|DocumentRoot\s"/var/www/html"|DocumentRoot "/var/www/mediawiki"|' /etc/httpd/conf/httpd.conf \
+#     && sed -i 's|<Directory\s"/var/www/html">|<Directory "/var/www/mediawiki">|' /etc/httpd/conf/httpd.conf \
+#     && sed -i 's|#\sDirectoryIndex.*|DirectoryIndex index.html index.html.var index.php|' /etc/httpd/conf/httpd.conf \
+#     && echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf
 
 # dummy cert
 RUN openssl req -newkey rsa:2048 -nodes -keyout /etc/pki/tls/private/localhost.key -x509 -days 3650 -nodes \

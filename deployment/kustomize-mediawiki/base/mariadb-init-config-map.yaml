@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb-init-scripts
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS wikidb;
+    USE wikidb;
+    CREATE USER 'wiki'@'localhost' IDENTIFIED BY 'THISpasswordSHOULDbeCHANGED';
+    GRANT ALL PRIVILEGES ON wikidb.* TO 'wiki'@'localhost';
+    FLUSH PRIVILEGES;
