@@ -83,15 +83,53 @@ Trigger the `Apply Cluster with Vnet` workflow. Input the name of the `environme
 
 # Application Deployment
 
+## Step 1: Clone repo and login to kubernetes
+```bash
+git clone https://github.com/SamitManna/mediawiki.git
+az login
+az aks get-credentials --resource-group <env>-rg --name <env>-cluster
+```
 
-4. CI/CD Pipeline (Optional):
+## Step 2: Randomize secrets
+```bash
+cd mediawiki/deployment/
+bash random_password_secret.sh
+```
 
-5. Monitoring and Logging:
+## Step 3: Apply Kubernetes
+```bash``
+cd kustomize-mediawiki/overlays/development/
+kubectl apply --kustomize .
+```
 
-6. Security and Networking:
+> **BETTER WAY TO DO THIS:**  Setup argocd in AKS cluster and deploy as GitOps
 
-7. High Availability and Scalability:
+## Step 4: Verify Deployment
+- Verify if pods and services are ready
+```bash
+kubectl get pods
+kubectl get svc
+```
+- Note the `EXTERNAL-IP` of `mediawiki` service
+- Open browser and enter `http://EXTERNAL-IP`
+- Landing page will open
+![landing page](./pictures/mediawiki_landing_page.png)
 
-8. Scaling Considerations (Optional):
+## Step 5: Complete Installation
 
-9. Create docker image
+> **IDEAL WAY TO DO THIS:**  It should be done with init containers. One init container in mariadm deployment to create users, permission in mariadb. Another init script to generate LocalSettings.php using install.php. Need to troubleshoot this, below is the workaround.
+
+- Click on complete the installation
+- Once installation complete download the LocalSettings.php
+- Copy the file currect folder
+- Upload the mediawiki kubernetes pod
+```bash
+kubectl get pods -l app=mediawiki
+# note pod name
+kubectl cp LocalSettings.php mediawiki-dc4d4d576-plsvd:/var/www/html/LocalSettings.php
+```
+- Now click on enter wiki on browser to open newly created wiki
+
+# CI/CD Pipeline (Optional):
+
+# Scaling Considerations (Optional):

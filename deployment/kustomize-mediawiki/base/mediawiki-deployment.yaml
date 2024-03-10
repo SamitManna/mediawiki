@@ -18,16 +18,9 @@ spec:
         image: mediawiki:1.41.0
         ports:
         - containerPort: 80
-        volumeMounts:
-        - name: config
-          mountPath: /var/www/html/LocalSettings.php
-          subPath: LocalSettings.php
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mariadb-secrets
               key: root-password
-      volumes:
-      - name: config
-        emptyDir: {}
