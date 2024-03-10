@@ -6,6 +6,6 @@ data:
   init.sql: |
     CREATE DATABASE IF NOT EXISTS wikidb;
     USE wikidb;
-    CREATE USER 'wiki'@'localhost' IDENTIFIED BY 'THISpasswordSHOULDbeCHANGED';
-    GRANT ALL PRIVILEGES ON wikidb.* TO 'wiki'@'localhost';
+    CREATE USER 'wiki'@'%' IDENTIFIED BY 'THISpasswordSHOULDbeCHANGED';
+    GRANT ALL PRIVILEGES ON wikidb.* TO 'wiki'@'%';
     FLUSH PRIVILEGES;
