@@ -27,7 +27,7 @@ spec:
         emptyDir: {}
       initContainers:
       - name: initialize-mediawiki
-        image: mediawiki-centos
+        image: mediawiki:1.41.0
         command:
         - /bin/sh
         - -c

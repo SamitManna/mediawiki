@@ -32,17 +32,6 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
-      initContainers:
-      - name: init-mariadb
-        image: mariadb:latest
-        command: ["sh", "-c", "sleep 10 && mariadb -h localhost -u root -p $MYSQL_ROOT_PASSWORD < /docker-entrypoint-initdb.d/init.sql"]
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secrets
-              key: root-password
-        volumeMounts:
         - name: init-scripts
           mountPath: /docker-entrypoint-initdb.d
       volumes:
