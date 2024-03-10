@@ -8,4 +8,6 @@ data:
     USE wikidb;
     CREATE USER 'wiki'@'%' IDENTIFIED BY 'THISpasswordSHOULDbeCHANGED';
     GRANT ALL PRIVILEGES ON wikidb.* TO 'wiki'@'%';
+    CREATE USER 'wiki'@'mariadb' IDENTIFIED BY 'THISpasswordSHOULDbeCHANGED';
+    GRANT ALL PRIVILEGES ON wikidb.* TO 'wiki'@'mariadb';
     FLUSH PRIVILEGES;

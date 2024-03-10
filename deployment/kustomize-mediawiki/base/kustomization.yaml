@@ -1,6 +1,6 @@
 resources:
 - mariadb-env-config-map.yaml
-- mariadb-init-config-map.yaml
+# - mariadb-init-config-map.yaml
 - secrets.yaml
 - mariadb-deployment.yaml
 - mariadb-service.yaml
