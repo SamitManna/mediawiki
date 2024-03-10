@@ -6,3 +6,5 @@
 3. Configure the Federated Identity Credential to Authenticate Azure with Github
 4. Create Roles
 5. Assign role to the Federated Identity Credential
+
+# ACR (Azure Container Registry)

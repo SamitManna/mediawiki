@@ -10,6 +10,7 @@ To perform all steps below you will need to have the following in place:
 - Azure `subscription id`
 - Ubuntu VM for Github Actions self-hosted runner
 - Github [Personal Access Token](https://docs.github.com/en/enterprise-server@3.9/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+- ACR (Azure container registry)
 
 # Bootstraping
 
@@ -81,6 +82,26 @@ An environment requires the following variables and secrets at a minimum:
 
 Trigger the `Apply Cluster with Vnet` workflow. Input the name of the `environment` (e.g. `dev`) you just created. After about 5 minutes you should have a fully functional AKS cluster within its own Vnet.
 
+# Build Pipelines
+
+## Step 1: Setup Github Actions for build
+
+- In your GitHub repository, go to Settings > Secrets > Actions
+- Create the following secrets and variable:
+
+| Variable               | Description                                         | Example                                |
+|------------------------|-----------------------------------------------------|----------------------------------------|
+| `REGISTRY_LOGIN_SERVER`           | Registry server | `myregistry.azurecr.io`                            |
+
+| Secret               | Description                                         | Example                                |
+|------------------------|-----------------------------------------------------|----------------------------------------|
+| `AZURE_CREDENTIALS`           | Admin Cred or Cred obtained at step 1 | {\"clientId\": \"<clientId>\", \"clientSecret\": \"<clientSecret>\", \"subscriptionId\": \"<subscriptionId>\", \"tenantId\": \"<tenantId>\"}                            |
+
+## Step 2: Trigger build
+- Change anything on the Dockerfile build will trigger automatically, docker image will be crated and pushed to ECR
+- Note the docker image name to be used in deployment
+
+
 # Application Deployment
 
 ## Step 1: Clone repo and login to kubernetes
@@ -129,7 +150,5 @@ kubectl get pods -l app=mediawiki
 kubectl cp LocalSettings.php mediawiki-dc4d4d576-plsvd:/var/www/html/LocalSettings.php
 ```
 - Now click on enter wiki on browser to open newly created wiki
-
-# CI/CD Pipeline (Optional):
 
 # Scaling Considerations (Optional):
