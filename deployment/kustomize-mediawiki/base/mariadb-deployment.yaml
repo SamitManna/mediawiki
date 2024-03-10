@@ -32,9 +32,6 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
-      volumes:
-      - name: data
-        emptyDir: {}
       initContainers:
       - name: init-mariadb
         image: mariadb:latest
@@ -48,8 +45,9 @@ spec:
         volumeMounts:
         - name: init-scripts
           mountPath: /docker-entrypoint-initdb.d
-          
       volumes:
+      - name: data
+        emptyDir: {}
       - name: init-scripts
         configMap:
           name: mariadb-init-scripts
