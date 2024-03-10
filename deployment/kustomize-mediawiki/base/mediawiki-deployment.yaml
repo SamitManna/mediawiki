@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,21 +18,6 @@ spec:
         image: mediawiki:1.41.0
         ports:
         - containerPort: 80
-        env:
-        - name: MEDIAWIKI_DB_HOST
-          value: mariadb
-        - name: MEDIAWIKI_DB_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: mariadb-env
-              key: MYSQL_DATABASE
-        - name: MEDIAWIKI_DB_USER
-          value: root
-        - name: MEDIAWIKI_DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secrets
-              key: root-password
         volumeMounts:
         - name: config
           mountPath: /var/www/html/LocalSettings.php
@@ -40,32 +26,31 @@ spec:
       - name: config
         emptyDir: {}
       initContainers:
-      - name: localsettings
+      - name: initialize-mediawiki
         image: mediawiki:1.41.0
         command:
         - /bin/sh
         - -c
         - |
-          echo "<?php
-          \$wgDBserver = \"${MEDIAWIKI_DB_HOST}\";
-          \$wgDBname = \"${MEDIAWIKI_DB_NAME}\";
-          \$wgDBuser = \"${MEDIAWIKI_DB_USER}\";
-          \$wgDBpassword = \"${MEDIAWIKI_DB_PASSWORD}\";
-          ?>" > /config/LocalSettings.php
+          php /var/www/html/maintenance/install.php \
+            --dbname=mediawiki \
+            --dbserver="mariadb" \
+            --installdbuser=root \
+            --installdbpass="$(MYSQL_ROOT_PASSWORD)" \
+            --dbuser=mediwiki_user \
+            --dbpass=I9WeyZ5aQnEqx3kL5GMQHK \
+            --server="http://localhost" \
+            --scriptpath=/w \
+            --lang=en \
+            --pass=Adminpassword \
+            "Samit" \
+            "Admin"
+          cp /var/www/html/LocalSettings.php /config/LocalSettings.php
         volumeMounts:
         - name: config
           mountPath: /config
         env:
-        - name: MEDIAWIKI_DB_HOST
-          value: mariadb
-        - name: MEDIAWIKI_DB_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: mariadb-env
-              key: MYSQL_DATABASE
-        - name: MEDIAWIKI_DB_USER
-          value: root
-        - name: MEDIAWIKI_DB_PASSWORD
+        - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mariadb-secrets

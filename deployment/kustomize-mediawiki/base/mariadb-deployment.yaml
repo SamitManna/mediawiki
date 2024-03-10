@@ -24,6 +24,10 @@ spec:
               key: root-password
         - name: MYSQL_DATABASE
           value: mediawiki
+        - name: MYSQL_USER
+          value: mediwiki_user
+        - name: MYSQL_PASSWORD
+          value: I9WeyZ5aQnEqx3kL5GMQHK
         envFrom:
         - configMapRef:
             name: mariadb-env

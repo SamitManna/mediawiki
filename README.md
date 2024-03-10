@@ -1,6 +1,6 @@
 # Mediawiki
 
-## Prerequisites
+# Prerequisites
 To perform all steps below you will need to have the following in place:
 
 - Access to a [Azure Account](https://azure.microsoft.com/en-in/free) with role `Global Administrator`
