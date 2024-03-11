@@ -1,32 +1,28 @@
 # Use the official centos as the base image
-FROM centos:8
+FROM centos:7
 
 # Version
-ENV MEDIAWIKI_MAJOR_VERSION 1.41
-ENV MEDIAWIKI_VERSION 1.41.0
+ENV MEDIAWIKI_MAJOR_VERSION 1.34
+ENV MEDIAWIKI_VERSION 1.34.4
 
-# Install required packages
-RUN cd /etc/yum.repos.d/
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
-RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
-RUN dnf module reset php
-RUN dnf module enable -y php:7.4
-RUN dnf install -y wget \
-                   httpd \
-                   php \
-                   php-mysqlnd \
-                   php-gd php-xml \
-                   mariadb \
-                   php-mbstring \
-                   php-json \
-                   mod_ssl \
-                   php-intl \
-                   php-apcu \
-                   openssl
+RUN yum install -y \
+    --setopt=tsflags=nodocs \
+    centos-release-scl \
+    curl
+RUN yum install -y \
+    --setopt=tsflags=nodocs \
+    httpd24-httpd \
+    rh-php73-php \
+    rh-php73-php \
+    rh-php73-php-mbstring \
+    rh-php73-php-mysqlnd \
+    rh-php73-php-gd \
+    rh-php73-php-xml \
+    && yum clean all
 
-# Copy the MediaWiki files to the Apache document root
-RUN cd /var/www/html; \
-    curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz; \
+WORKDIR /opt/rh/httpd24/root/var/www/html
+
+RUN curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz; \
     curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz.sig" -o mediawiki.tar.gz.sig; \
     gpg --batch --keyserver keyserver.ubuntu.com --recv-keys \
                 D7D6767D135A514BEB86E9BA75682B08E8A3FEC4 \
@@ -35,20 +31,20 @@ RUN cd /var/www/html; \
                 1D98867E82982C8FE0ABC25F9B69B3109D3BB7B0 \
         ; \
     gpg --verify mediawiki.tar.gz.sig mediawiki.tar.gz; \
-    tar --strip-components=1 -zxf mediawiki.tar.gz; \
-    rm -f mediawiki.tar.gz.sig mediawiki.tar.gz; \
-    chown -R apache:apache /var/www/html
+    tar -zxf mediawiki.tar.gz; \
+    mv mediawiki-${MEDIAWIKI_VERSION} mediawiki; \
+    rm -f mediawiki.tar.gz.sig mediawiki.tar.gz
 
-# dummy cert
-RUN openssl req -newkey rsa:2048 -nodes -keyout /etc/pki/tls/private/localhost.key -x509 -days 3650 -nodes \
-                -subj "/C=US/ST=CA/L=CA/O=MW/OU=WIKI/CN=localhost" \
-                -out /etc/pki/tls/certs/localhost.crt
+RUN sed -i -e 's|^DocumentRoot "/opt/rh/httpd24/root/var/www/html"|DocumentRoot "/opt/rh/httpd24/root/var/www/html/mediawiki"|' \
+    -e 's|    DirectoryIndex index.html|    DirectoryIndex index.html index.html.var index.php|' \
+    -e 's|^<Directory "/opt/rh/httpd24/root/var/www/html">|<Directory "/opt/rh/httpd24/root/var/www/html/mediawiki">|' \
+    # -e 's|#ServerName*|ServerName 127.0.0.1:80|' \
+    /opt/rh/httpd24/root/etc/httpd/conf/httpd.conf
+RUN chown -R apache:apache /opt/rh/httpd24/root/var/www/html/mediawiki
+RUN chmod 755 /opt/rh/httpd24/root/var/www/html/mediawiki/
+RUN sed -i 's|^LoadModule http2_module modules/mod_http2.so|#LoadModule http2_module modules/mod_http2.so|' \
+    /opt/rh/httpd24/root/etc/httpd/conf.modules.d/00-base.conf
 
+# COPY LocalSettings.php /opt/rh/httpd24/root/var/www/html/mediawiki/
 
-RUN systemctl enable httpd
-
-# Expose the Apache port
-EXPOSE 80
-
-# Start Apache
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+CMD /opt/rh/httpd24/root/usr/sbin/apachectl -DFOREGROUND
