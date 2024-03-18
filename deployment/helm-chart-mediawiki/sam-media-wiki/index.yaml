@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  sam-media-wiki:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-03-18T21:00:20.6417716+05:30"
+    description: A Helm chart for Kubernetes
+    digest: d965a49d7a8d1c96922ceeb2884ff683f1ebaa604a53d46e5de12fc1f26b8af9
+    name: sam-media-wiki
+    type: application
+    urls:
+    - sam-media-wiki-0.0.1.tgz
+    version: 0.0.1
+generated: "2024-03-18T21:00:20.6401306+05:30"

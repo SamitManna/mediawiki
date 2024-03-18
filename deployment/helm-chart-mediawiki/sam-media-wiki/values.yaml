@@ -1,0 +1,12 @@
+mariadb:
+  replicaCount: 1
+  image:
+    repository: mariadb
+    tag: latest
+  database: mediawiki
+
+mediawiki:
+  replicaCount: 1
+  image:
+    repository: mediawiki
+    tag: 1.41.0
