@@ -118,7 +118,7 @@ bash random_password_secret.sh
 ```
 
 ## Step 3: Apply Kubernetes
-```bash``
+```bash
 cd kustomize-mediawiki/overlays/development/
 kubectl apply --kustomize .
 ```
